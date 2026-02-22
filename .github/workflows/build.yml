@@ -57,10 +57,10 @@ jobs:
                 sed -i 's/^include "std.debug"/#include "std.debug"/' sys/riscv/conf/GENERIC || true
                 ;;
             esac
-            MAKEOBJDIRPREFIX=/usr/src tools/build/make.py --bootstrap-toolchain -j$(nproc) TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildworld
-            MAKEOBJDIRPREFIX=/usr/src tools/build/make.py --bootstrap-toolchain -j$(nproc) TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH kernel-toolchain
-            MAKEOBJDIRPREFIX=/usr/src tools/build/make.py --bootstrap-toolchain -j$(nproc) TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildkernel
-            MAKEOBJDIRPREFIX=/usr/src tools/build/make.py --bootstrap-toolchain -j$(nproc) TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH packages
+            MAKEOBJDIRPREFIX=/usr/src tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildworld
+            MAKEOBJDIRPREFIX=/usr/src tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH kernel-toolchain
+            MAKEOBJDIRPREFIX=/usr/src tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildkernel
+            MAKEOBJDIRPREFIX=/usr/src tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH packages
             #make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH buildworld
             #make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH buildkernel
             #make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH packages
