@@ -41,10 +41,10 @@ jobs:
             sudo apt-get update -y
             sudo apt-get install git build-essential libbz2-dev libarchive-dev libssl-dev flex -y
             sudo systemctl mask --now systemd-oomd systemd-oomd.socket 
-            [ -d /usr/bsdsrc ] || mkdir -p /usr/bsdsrc && rm -rf /usr/bsdsrc/*
-            cd /usr/bsdsrc
+            [ -d /home/runner/work/ykla.github.io/ykla.github.io/src ] || mkdir -p /home/runner/work/ykla.github.io/ykla.github.io/src && rm -rf /home/runner/work/ykla.github.io/ykla.github.io/src/*
+            cd /home/runner/work/ykla.github.io/ykla.github.io/src
             git config --global advice.defaultBranchName false
-            git clone --depth 1 --branch main https://git.freebsd.org/src.git /usr/bsdsrc
+            git clone --depth 1 --branch main https://git.freebsd.org/src.git /home/runner/work/ykla.github.io/ykla.github.io/src
 
             case "$TARGET_ARCH" in
               amd64)
@@ -57,20 +57,20 @@ jobs:
                 sed -i 's/^include "std.debug"/#include "std.debug"/' sys/riscv/conf/GENERIC || true
                 ;;
             esac
-            MAKEOBJDIRPREFIX=/usr/bsdsrc tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildworld
-            MAKEOBJDIRPREFIX=/usr/bsdsrc tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH kernel-toolchain
-            MAKEOBJDIRPREFIX=/usr/bsdsrc tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildkernel
-            MAKEOBJDIRPREFIX=/usr/bsdsrc tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH packages
+            MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildworld
+            MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH kernel-toolchain
+            MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildkernel
+            MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH packages
             #make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH buildworld
             #make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH buildkernel
             #make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH packages
             # 直接复制到 pages-root
             ls -al
             mkdir -p /home/runner/work/ykla.github.io/ykla.github.io/pages-root 
-            ls /usr/obj/usr/bsdsrc/repo/
-            #for d in /usr/obj/usr/bsdsrc/repo/FreeBSD:16:*; do mv "$d" "$(echo "$d" | sed 's/:/-/g')"; done
-            #cp -R /usr/obj/usr/bsdsrc/repo/. /home/runner/work/ykla.github.io/ykla.github.io/pages-root/
-            cd /usr/bsdsrc
+            ls /usr/obj/home/runner/work/ykla.github.io/ykla.github.io/src/repo/
+            #for d in /usr/obj/home/runner/work/ykla.github.io/ykla.github.io/src/repo/FreeBSD:16:*; do mv "$d" "$(echo "$d" | sed 's/:/-/g')"; done
+            #cp -R /usr/obj/home/runner/work/ykla.github.io/ykla.github.io/src/repo/. /home/runner/work/ykla.github.io/ykla.github.io/pages-root/
+            cd /home/runner/work/ykla.github.io/ykla.github.io/src
             TZ=Asia/Shanghai git log -1 --pretty=format:"哈希：%H%n作者：%an <%ae>%n提交者：%cn <%ce>%n提交时间：%cd%n提交信息：%n%n%B" --date=format-local:"%Y-%m-%d %H:%M:%S %z"  > /home/runner/work/ykla.github.io/ykla.github.io/pages-root/commit.txt
             ls -al /home/runner/work/ykla.github.io/ykla.github.io/pages-root/
             du -sh /home/runner/work/ykla.github.io/ykla.github.io/pages-root/
