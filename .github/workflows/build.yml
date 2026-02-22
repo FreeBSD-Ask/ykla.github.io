@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
@@ -34,21 +34,13 @@ jobs:
       - name: 初始化输出目录 (${{ matrix.target }})
         run: |
           mkdir -p pages-root
-
-      - name: 在 FreeBSD VM 中构建 (${{ matrix.target }})
-        uses: vmactions/freebsd-vm@v1.4.2
-        with:
-          release: "15.0"
-          arch: x86_64
-          sync-time: true
-          mem: 8192
-#          debug-on-error: true
-          run: |
-            ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+            sudo timedatectl set-timezone Asia/Shanghai
             date
+            pwd
             TARGET_ARCH=${{ matrix.target }}
-            pkg update -f  # 注意，riscv 默认无 pkg 源
-            pkg ins -y git 
+            sudo apt-get update -y
+            sudo apt-get install git build-essential libbz2-dev libarchive-dev libssl-dev flex -y
+            sudo systemctl mask --now systemd-oomd systemd-oomd.socket 
             [ -d /usr/src ] || mkdir -p /usr/src && rm -rf /usr/src/*
             cd /usr/src
             git config --global advice.defaultBranchName false
@@ -56,23 +48,28 @@ jobs:
 
             case "$TARGET_ARCH" in
               amd64)
-                sed -i '' 's/^include "std.debug"/#include "std.debug"/' sys/amd64/conf/GENERIC || true
+                sed -i 's/^include "std.debug"/#include "std.debug"/' sys/amd64/conf/GENERIC || true
                 ;;
               aarch64)
-                sed -i '' 's/^include "std.debug"/#include "std.debug"/' sys/arm64/conf/std.arm64 || true
+                sed -i 's/^include "std.debug"/#include "std.debug"/' sys/arm64/conf/std.arm64 || true
                 ;;
               riscv64)
-                sed -i '' 's/^include "std.debug"/#include "std.debug"/' sys/riscv/conf/GENERIC || true
+                sed -i 's/^include "std.debug"/#include "std.debug"/' sys/riscv/conf/GENERIC || true
                 ;;
             esac
-
-            make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH buildworld
-            make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH buildkernel
-            make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH packages
+            MAKEOBJDIRPREFIX=/usr/src tools/build/make.py --bootstrap-toolchain -j$(nproc) TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildworld
+            MAKEOBJDIRPREFIX=/usr/src tools/build/make.py --bootstrap-toolchain -j$(nproc) TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH kernel-toolchain
+            MAKEOBJDIRPREFIX=/usr/src tools/build/make.py --bootstrap-toolchain -j$(nproc) TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildkernel
+            MAKEOBJDIRPREFIX=/usr/src tools/build/make.py --bootstrap-toolchain -j$(nproc) TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH packages
+            #make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH buildworld
+            #make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH buildkernel
+            #make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH packages
             # 直接复制到 pages-root
+            ls -al
             mkdir -p /home/runner/work/ykla.github.io/ykla.github.io/pages-root 
-            for d in /usr/obj/usr/src/repo/FreeBSD:16:*; do mv "$d" "$(echo "$d" | sed 's/:/-/g')"; done
-            cp -R /usr/obj/usr/src/repo/. /home/runner/work/ykla.github.io/ykla.github.io/pages-root/
+            ls /usr/obj/usr/src/repo/
+            #for d in /usr/obj/usr/src/repo/FreeBSD:16:*; do mv "$d" "$(echo "$d" | sed 's/:/-/g')"; done
+            #cp -R /usr/obj/usr/src/repo/. /home/runner/work/ykla.github.io/ykla.github.io/pages-root/
             cd /usr/src
             TZ=Asia/Shanghai git log -1 --pretty=format:"哈希：%H%n作者：%an <%ae>%n提交者：%cn <%ce>%n提交时间：%cd%n提交信息：%n%n%B" --date=format-local:"%Y-%m-%d %H:%M:%S %z"  > /home/runner/work/ykla.github.io/ykla.github.io/pages-root/commit.txt
             ls -al /home/runner/work/ykla.github.io/ykla.github.io/pages-root/
