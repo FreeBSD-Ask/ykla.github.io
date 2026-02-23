@@ -59,7 +59,6 @@ jobs:
                 ;;
             esac
             mkdir -p /home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj
-            sed -i '1i#include <stddef.h>' tools/build/cross-build/include/linux/stdlib.h
             MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildworld
             MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH kernel-toolchain
             MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj tools/build/make.py -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildkernel
