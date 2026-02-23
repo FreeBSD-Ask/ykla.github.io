@@ -44,7 +44,9 @@ jobs:
             [ -d /home/runner/work/ykla.github.io/ykla.github.io/src ] || mkdir -p /home/runner/work/ykla.github.io/ykla.github.io/src && rm -rf /home/runner/work/ykla.github.io/ykla.github.io/src/*
             cd /home/runner/work/ykla.github.io/ykla.github.io/src
             git config --global advice.defaultBranchName false
-            git clone --depth 1 --branch main https://git.freebsd.org/src.git /home/runner/work/ykla.github.io/ykla.github.io/src
+            git clone --branch main https://git.freebsd.org/src.git /home/runner/work/ykla.github.io/ykla.github.io/src
+            cd /home/runner/work/ykla.github.io/ykla.github.io/src
+            git checkout 2adc3f0db1877dbe9801e6dacfa9ae8df8879549
 
             case "$TARGET_ARCH" in
               amd64)
