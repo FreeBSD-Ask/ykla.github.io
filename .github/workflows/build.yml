@@ -57,6 +57,7 @@ jobs:
                 sed -i 's/^include "std.debug"/#include "std.debug"/' sys/riscv/conf/GENERIC || true
                 ;;
             esac
+            mkdir -p /home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj
             MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildworld
             MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH kernel-toolchain
             MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildkernel
