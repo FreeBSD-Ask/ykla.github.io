@@ -46,7 +46,7 @@ jobs:
             git config --global advice.defaultBranchName false
             git clone --branch main https://git.freebsd.org/src.git /home/runner/work/ykla.github.io/ykla.github.io/src
             cd /home/runner/work/ykla.github.io/ykla.github.io/src
-            git checkout 2adc3f0db1877dbe9801e6dacfa9ae8df8879549
+            git checkout 89c3ae5fc9cc24af940699b7e282fd24763f7ffa
 
             case "$TARGET_ARCH" in
               amd64)
