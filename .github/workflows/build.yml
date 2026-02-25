@@ -59,10 +59,10 @@ jobs:
                 ;;
             esac
             mkdir -p /home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj
-            MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildworld
+            #MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildworld
             MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj tools/build/make.py --bootstrap-toolchain -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH kernel-toolchain
-            MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj tools/build/make.py -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildkernel
-            MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj tools/build/make.py -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH packages
+            #MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj tools/build/make.py -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH buildkernel
+            #MAKEOBJDIRPREFIX=/home/runner/work/ykla.github.io/ykla.github.io/src/bsdobj tools/build/make.py -j$(nproc) -s TARGET=$TARGET_ARCH TARGET_ARCH=$TARGET_ARCH packages
             #make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH buildworld
             #make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH buildkernel
             #make -s -j$(sysctl -n hw.ncpu) TARGET_ARCH=$TARGET_ARCH packages
